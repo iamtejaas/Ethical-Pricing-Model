@@ -56,6 +56,11 @@ The primary goal of this project is to create a robust model that can suggest an
 ---
 
 
+## ⚠️ Disclaimer
+The Ethical Price Predictor estimates product prices by analyzing factors such as production cost, fair wage multipliers, sustainability, and demand. While the system leverages machine learning and fairness-driven metrics, all outputs are indicative and should be interpreted as supportive insights. Users are encouraged to apply their own judgment and consider additional data when making pricing-related decisions.
+
+---
+
 ## 📁 Files in this Repository
 
 ```
