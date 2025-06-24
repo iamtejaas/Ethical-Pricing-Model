@@ -43,6 +43,19 @@ The primary goal of this project is to create a robust model that can suggest an
 
 ---
 
+## 🧪 Model Details
+
+- **Model**: RandomForestRegressor
+- **Preprocessing**: Label Encoding for `item_category`, `item_name`, `city`
+- **Target Variable**: `base_price`
+- **Evaluation Metrics**:
+  - Price MSE
+  - Ethical Classification Accuracy
+- **Persistence**: Notebooks save trained models and encoders for reuse
+  
+---
+
+
 ## 📁 Files in this Repository
 
 ```
@@ -83,19 +96,6 @@ ETHICAL PRICING MODEL/
 │   └── result.html                  # Prediction output
 └── README.md                        # Project overview
 
----
-
-
-## 🧪 Model Details
-
-- **Model**: RandomForestRegressor
-- **Preprocessing**: Label Encoding for `item_category`, `item_name`, `city`
-- **Target Variable**: `base_price`
-- **Evaluation Metrics**:
-  - Price MSE
-  - Ethical Classification Accuracy
-- **Persistence**: Notebooks save trained models and encoders for reuse
-  
 ---
 
 ## ⚠️ Disclaimer
