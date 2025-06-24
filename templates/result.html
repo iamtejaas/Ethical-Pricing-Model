@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Prediction Result</title>
+</head>
+<body>
+    <h2>Predicted Ethical Price:</h2>
+    <h3>₹{{ price | round(2) }}</h3>
+
+    <h2>District-wise Price Comparison</h2>
+    <img src="{{ url_for('static', filename='plot.png') }}" alt="Price Plot">
+
+    <br><br>
+    <a href="/">Try Another</a>
+</body>
+</html>

@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ethical Price Predictor</title>
+
+  <!-- Google Fonts & Font Awesome -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: #f5faff; /* soft neutral background */
+      min-height: 100vh;
+      padding: 80px 20px 60px; /* top: space for navbar, bottom: space for footer */
+      display: flex;
+      flex-direction: column;
+    }
+
+/* ✅ Navbar */
+    .navbar {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background: #0288d1; /* solid blue */
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 8px;
+      z-index: 1000;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      overflow-x: hidden;
+    }
+
+    .navbar-brand {
+      font-size: 18px;
+      font-weight: bold;
+      color: white;
+      white-space: nowrap;
+    }
+
+/* ✅ Navbar buttons */
+    
+    .navbar-links {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      white-space: nowrap;
+      padding-right: 50px;
+      max-width: 100%;    /* ✅ prevents overflow */
+      padding-bottom: 4px; /* optional: space below buttons */
+    }
+
+
+    .navbar-links a {
+      background-color: white;
+      color: #0288d1;
+      font-weight: 600;
+      text-decoration: none;
+      padding: 8px 14px;
+      font-size: 14px;
+      border-radius: 6px;
+      transition: background 0.3s ease, color 0.3s ease, transform 0.2s ease;
+      white-space: nowrap;
+      box-sizing: border-box;
+      flex-shrink: 0;
+    }
+
+    .navbar-links a:hover {
+      background-color: #ffffff;
+      color: #01579b;
+      transform: scale(1.05);
+    }
+
+/* ✅ Footer */
+    .footer {
+      background-color: #0288d1;
+      color: white;
+      text-align: center;
+      padding: 16px;
+      margin-top: auto;
+    }
+
+/* ✅ Mobile responsiveness */
+    @media (max-width: 700px) {
+      .navbar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    
+      .navbar-links {
+        width: 100%;
+        flex-direction: column;
+        align-items: flex-start;
+        margin-top: 10px;
+      }
+    
+      .navbar-links a {
+        width: 100%;
+        margin-bottom: 8px;
+      }
+    }
+
+    
+
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(14px);
+      border-radius: 20px;
+      box-shadow: 0 8px 32px rgba(31, 38, 135, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      padding: 30px;
+    }
+
+    h2 {
+      text-align: center;
+      color: #01579b;
+      margin-bottom: 20px;
+    }
+
+    .info-box {
+      background-color: #e1f5fe;
+      border-left: 6px solid #158ccc;
+      padding: 16px 20px;
+      margin-bottom: 30px;
+      border-radius: 8px;
+      color: #01579b;
+      font-size: 15px;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+
+    label {
+      font-weight: 600;
+      color: #333;
+    }
+
+    select, input[type="submit"] {
+      padding: 12px;
+      font-size: 16px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      transition: all 0.3s ease;
+    }
+
+    select:focus {
+      border-color: #00c9ff;
+      box-shadow: 0 0 8px rgba(0,201,255,0.3);
+    }
+
+    input[type="submit"] {
+      background: linear-gradient(to right, #0288d1, #42c5d6);
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    input[type="submit"]:hover {
+      background: linear-gradient(to right, #13a8ed, #92fe9d);
+      transform: scale(1.03);
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .graph-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin-top: 20px;
+      justify-content: center;
+    }
+
+    .graph-container img {
+      max-width: 100%;
+      width: 48%;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+
+    .download-btn {
+      display: inline-block;
+      padding: 12px 20px;
+      margin-top: 10px;
+      background: linear-gradient(to right, #0288d1, #26c6da);
+      color: white;
+      font-weight: bold;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: transform 0.2s ease;
+    }
+
+    .download-btn:hover {
+      transform: scale(1.05);
+      background: linear-gradient(to right, #026fa1, #0288d1);
+    }
+
+    .result-table-container {
+      margin-top: 30px;
+      background: #ffffffcc;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      animation: fadeIn 0.8s ease-in-out;
+    }
+
+    .result-table-container h2 {
+        text-align: center;
+        color: #01579b;
+        margin-bottom: 20px;
+    }
+
+    .result-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 15px;
+    }
+
+    .result-table th, .result-table td {
+        text-align: left;
+        padding: 12px 15px;
+        border-bottom: 1px solid #e0e0e0;
+    }
+
+    .result-table th {
+        background-color: #0288d1;
+        color: #fff;
+        width: 40%;
+    }
+
+    .result-table tr:nth-child(even) {
+        background-color: #f4f9fb;
+    }
+
+    .result-table td {
+        color: #333;
+        font-weight: 500;
+    }
+    
+    .image-scroller-wrapper {
+        width: 100%;
+        overflow: hidden;
+        background: #ffffff;
+        padding: 10px 0;
+        box-shadow: inset 0 1px 5px rgba(0, 0, 0, 0.05);
+    }
+
+    .image-scroller {
+      display: flex;
+      animation: scroll-left 30s linear infinite;
+      gap: 30px;
+    }
+
+    .image-scroller img {
+      height: 60px;
+      object-fit: contain;
+      flex-shrink: 0;
+      transition: transform 0.3s ease;
+    }
+
+    .image-scroller img:hover {
+      transform: scale(1.1);
+    }
+
+    @keyframes scroll-left {
+      0% {
+        transform: translateX(0%);
+      }
+      100% {
+        transform: translateX(-100%);
+      }
+    }
+    /* First scroller: Left to Right */
+    .image-scroller-left {
+      display: flex;
+      animation: scroll-left 30s linear infinite;
+      gap: 30px;
+    }
+
+    @keyframes scroll-left {
+      0% {
+        transform: translateX(0%);
+      }
+      100% {
+        transform: translateX(-100%);
+      }
+    }
+
+/* Second scroller: Right to Left */
+    .image-scroller-right {
+      display: flex;
+      animation: scroll-right 30s linear infinite;
+      gap: 30px;
+    }
+
+    @keyframes scroll-right {
+      0% {
+        transform: translateX(-100%);
+      }
+      100% {
+        transform: translateX(0%);
+      }
+    }
+
+    .image-scroller-wrapper {
+      width: 100%;
+      overflow: hidden;
+      background: #ffffff;
+      padding: 10px 0;
+      box-shadow: inset 0 1px 5px rgba(0, 0, 0, 0.05);
+    }
+
+    .image-scroller img {
+      height: 60px;
+      object-fit: contain;
+      flex-shrink: 0;
+      transition: transform 0.3s ease;
+    }
+
+    .image-scroller img:hover {
+      transform: scale(1.1);
+    }
+
+    .image-scroller-wrapper:hover .image-scroller-left,
+    .image-scroller-wrapper:hover .image-scroller-right {
+      animation-play-state: paused;
+    }
+
+
+  </style>
+</head>
+<body>
+
+<!-- ✅ NAVBAR -->
+<nav class="navbar">
+  <div class="navbar-brand">🧠 Ethical Price Predictor</div>
+  <div class="navbar-links">
+    <a href="javascript:void(0)" onclick="switchTab('predict', event)">🔍 Predict Price</a>
+    <a href="javascript:void(0)" onclick="switchTab('compare', event)">📊 Compare Prices</a>
+    <a href="/history">🕘 Check History</a>
+    <a href="/about">ℹ️ About Us</a>
+  </div>
+</nav>
+
+<!-- ✅ MAIN CONTENT -->
+<div class="container">
+
+  <!-- Prediction Tab -->
+  <div id="tab-predict" class="tab-content active">
+    <h2>Ethical Price Prediction</h2>
+    <div class="info-box">
+      <h3>This tool predicts the ethical price of retail items using location, category, and ML algorithms.</h3>
+    </div>
+
+    <form method="POST">
+      <label><i class="fa-solid fa-layer-group"></i> Item Category:</label>
+      <select name="item_category" required onchange="updateItems()">
+        <option value="">-- Select Category --</option>
+        {% for cat in categories %}
+          <option value="{{ cat }}" {% if cat == category %}selected{% endif %}>{{ cat }}</option>
+        {% endfor %}
+      </select>
+
+      <label><i class="fa-solid fa-box"></i> Item Name:</label>
+      <select name="item_name" required>
+        <option value="">-- Select Item --</option>
+        {% if category in category_items %}
+          {% for item in category_items[category] %}
+            <option value="{{ item }}" {% if item == item_name %}selected{% endif %}>{{ item }}</option>
+          {% endfor %}
+        {% endif %}
+      </select>
+
+      <label><i class="fa-solid fa-city"></i> City:</label>
+      <select name="city" required>
+        <option value="">-- Select City --</option>
+        {% for city_opt in cities %}
+          <option value="{{ city_opt }}" {% if city == city_opt %}selected{% endif %}>{{ city_opt }}</option>
+        {% endfor %}
+      </select>
+
+      <input type="submit" value="Predict Price" />
+    </form>
+
+    {% if result %}
+    <div class="result-table-conatiner">
+      <table class="result-table">
+        <tr><th>🔮 Predicted Price</th><td>₹{{ result.predicted_price }}</td></tr>
+        <tr><th>⚖️ Fairness Label</th><td>{{ result.fair_label }}</td></tr>
+        <tr><th>📊 Tier-3 Max Suggested Price</th><td>₹{{ result.tier3_max }}</td></tr>
+        <tr><th>📉 Price Prediction MSE</th><td>{{ result.mse_price }}</td></tr>
+        <tr>
+        <th>✅ Fairness Accuracy</th>
+        <td>
+          {% if result.fairness_accuracy is defined %}
+            {{ (result.fairness_accuracy * 100) | round(2) }}%
+          {% else %}
+            Not Available
+          {% endif %}
+        </td>
+        </tr>
+        <tr><th>💰 Avg Market Price</th><td>₹{{ result.avg_market_price }}</td></tr>
+        <tr><th>🌿 Sustainability Score</th><td>{{ result.sustainability }}</td></tr>
+        <tr><th>📊 Local Demand Index</th><td>{{ result.local_demand }}</td></tr>
+        <tr><th>🏭 Production Cost</th><td>₹{{ result.production_cost }}</td></tr>
+        <tr>
+        <th>📈 Profit Margin</th>
+        <td>
+          {% if result.profit_margin is defined %}
+            {{ (result.profit_margin * 100) | round(2) }}%
+          {% else %}
+            Not Available
+          {% endif %}
+        </td>
+        </tr>
+
+        <tr><th>💵 Fair Wage Multiplier</th><td>{{ result.wage_score }}</td></tr>
+      </table>
+    </div>
+
+    </div>
+    <div class="graph-container">
+      <!--<img src="{{ url_for('static', filename='plot_trend.png') }}" alt="Monthly Price Trend" /> -->
+      <img src="{{ url_for('static', filename='plot_marketplace.png') }}" alt="Marketplace Comparison" />
+      <img src="{{ url_for('static', filename='plot_distribution.png') }}" alt="Price Distribution Graph" />
+    </div>
+    <div style="text-align:center; margin-top: 20px;">
+      <a href="/download_result" class="download-btn">📥 Download Results</a>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- Compare Tab -->
+  <div id="tab-compare" class="tab-content">
+    <h2>Compare Product Between Cities</h2>
+    <form method="POST" action="/compare">
+      <label>Item Category:</label>
+      <select name="comp_category" required onchange="updateCompareItems()">
+        {% for cat in categories %}
+          <option value="{{ cat }}">{{ cat }}</option>
+        {% endfor %}
+      </select>
+
+      <label>Item Name:</label>
+      <select name="comp_item" required>
+        {% for item in category_items[categories[0]] %}
+          <option value="{{ item }}">{{ item }}</option>
+        {% endfor %}
+      </select>
+
+      <label>Select up to multiple Cities:</label>
+      <select name="compare_cities" multiple required size="10">
+        {% for city in cities %}
+          <option value="{{ city }}">{{ city }}</option>
+        {% endfor %}
+      </select>
+
+      <input type="submit" value="Compare Prices" />
+    </form>
+  </div>
+
+</div>
+<br>
+<div class="image-scroller-wrapper">
+  <div class="image-scroller image-scroller-left">
+    <img src="{{ url_for('static', filename='logos/amazon_logo.jpg') }}" alt="Amazon">
+    <img src="{{ url_for('static', filename='logos/Flipkart_logo.png') }}" alt="Flipkart">
+    <img src="{{ url_for('static', filename='logos/relience_logo.png') }}" alt="Reliance">
+    <img src="{{ url_for('static', filename='logos/snapdeal_logo.png') }}" alt="Snapdeal">
+    <img src="{{ url_for('static', filename='logos/tata_cliq_logo.png') }}" alt="TataCliq">
+    <img src="{{ url_for('static', filename='logos/amazon_logo.jpg') }}" alt="Amazon">
+    <img src="{{ url_for('static', filename='logos/Flipkart_logo.png') }}" alt="Flipkart">
+    <img src="{{ url_for('static', filename='logos/relience_logo.png') }}" alt="Reliance">
+    <img src="{{ url_for('static', filename='logos/snapdeal_logo.png') }}" alt="Snapdeal">
+    <img src="{{ url_for('static', filename='logos/tata_cliq_logo.png') }}" alt="TataCliq">
+    <img src="{{ url_for('static', filename='logos/amazon_logo.jpg') }}" alt="Amazon">
+    <img src="{{ url_for('static', filename='logos/Flipkart_logo.png') }}" alt="Flipkart">
+    <img src="{{ url_for('static', filename='logos/relience_logo.png') }}" alt="Reliance">
+    <img src="{{ url_for('static', filename='logos/snapdeal_logo.png') }}" alt="Snapdeal">
+    <img src="{{ url_for('static', filename='logos/tata_cliq_logo.png') }}" alt="TataCliq">
+    
+    
+  </div>
+</div>
+<div class="image-scroller-wrapper">
+  <div class="image-scroller image-scroller-right">
+    <img src="{{ url_for('static', filename='logos/myntra_logo.png') }}" alt="Myntra">
+    <img src="{{ url_for('static', filename='logos/jio_mart_logo.png') }}" alt="JioMart">
+    <img src="{{ url_for('static', filename='logos/Ebay_logo.png') }}" alt="eBay">
+    <img src="{{ url_for('static', filename='logos/nykaa_new.jfif') }}" alt="Nykaa">
+    <img src="{{ url_for('static', filename='logos/Ajio_Logo.png') }}" alt="Ajio">
+    <img src="{{ url_for('static', filename='logos/myntra_logo.png') }}" alt="Myntra">
+    <img src="{{ url_for('static', filename='logos/jio_mart_logo.png') }}" alt="JioMart">
+    <img src="{{ url_for('static', filename='logos/Ebay_logo.png') }}" alt="eBay">
+    <img src="{{ url_for('static', filename='logos/nykaa_new.jfif') }}" alt="Nykaa">
+    <img src="{{ url_for('static', filename='logos/Ajio_Logo.png') }}" alt="Ajio">
+    <img src="{{ url_for('static', filename='logos/myntra_logo.png') }}" alt="Myntra">
+    <img src="{{ url_for('static', filename='logos/jio_mart_logo.png') }}" alt="JioMart">
+    <img src="{{ url_for('static', filename='logos/Ebay_logo.png') }}" alt="eBay">
+    <img src="{{ url_for('static', filename='logos/nykaa_new.jfif') }}" alt="Nykaa">
+    <img src="{{ url_for('static', filename='logos/Ajio_Logo.png') }}" alt="Ajio">
+    <!-- Add more if needed -->
+  </div>
+</div>
+
+<footer class="footer">
+  © 2025 Ethical Price Predictor | Powered by Machine Learning
+</footer>
+
+
+<!-- ✅ JavaScript -->
+<script>
+  function switchTab(tabName, event) {
+    if (event) event.preventDefault();
+
+    // Hide all tabs
+    document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+
+    // Show selected tab
+    const target = document.getElementById('tab-' + tabName);
+    if (target) target.classList.add('active');
+  }
+
+  function updateItems() {
+    const category = document.querySelector('select[name="item_category"]').value;
+    const itemSelect = document.querySelector('select[name="item_name"]');
+    itemSelect.innerHTML = '<option>Loading...</option>';
+
+    fetch('/get_items_for_category', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      body: 'category=' + encodeURIComponent(category)
+    })
+    .then(res => res.json())
+    .then(data => {
+      itemSelect.innerHTML = '<option value="">-- Select Item --</option>';
+      data.forEach(item => {
+        const option = document.createElement("option");
+        option.value = item;
+        option.textContent = item;
+        itemSelect.appendChild(option);
+      });
+    });
+  }
+
+  function updateCompareItems() {
+    const category = document.querySelector('select[name="comp_category"]').value;
+    const itemSelect = document.querySelector('select[name="comp_item"]');
+    itemSelect.innerHTML = '<option>Loading...</option>';
+
+    fetch('/get_items_for_category', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      body: 'category=' + encodeURIComponent(category)
+    })
+    .then(res => res.json())
+    .then(data => {
+      itemSelect.innerHTML = '<option value="">-- Select Item --</option>';
+      data.forEach(item => {
+        const option = document.createElement("option");
+        option.value = item;
+        option.textContent = item;
+        itemSelect.appendChild(option);
+      });
+    });
+  }
+</script>
+
+</body>
+</html>

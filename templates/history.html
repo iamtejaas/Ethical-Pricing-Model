@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Prediction History</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f4faff;
+            padding: 40px;
+        }
+        h2 {
+            text-align: center;
+            color: #0d47a1;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 30px;
+            background: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background: #bbdefb;
+            color: #0d47a1;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        .back-button {
+            margin-top: 20px;
+            display: block;
+            text-align: center;
+        }
+        .back-button a {
+            background: #2196f3;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <h2>Prediction History</h2>
+    {% if history %}
+    <table>
+        <thead>
+            <tr>
+                <th>Timestamp</th>
+                <th>Category</th>
+                <th>Item</th>
+                <th>City</th>
+                <th>Predicted Price</th>
+                <th>Fairness</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in history %}
+            <tr>
+                <td>{{ row.timestamp }}</td>
+                <td>{{ row.category }}</td>
+                <td>{{ row.item }}</td>
+                <td>{{ row.city }}</td>
+                <td>₹{{ row.predicted_price | round(2) }}</td>
+                <td>{{ row.fair_label }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <p style="text-align: center;">No predictions yet.</p>
+    {% endif %}
+
+    <div class="back-button">
+        <a href="/">← Back to Prediction</a>
+    </div>
+</body>
+</html>
